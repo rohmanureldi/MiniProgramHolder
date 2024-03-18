@@ -27,14 +27,11 @@ class AuthActivity : AppCompatActivity() {
 
     private val TAG = "AuthActivity"
     private val webUrl = BuildConfig.DEVICE_IP_ADDRESS + "3011/"
+    private val ivByte: ByteArray = "TelkomselJuara#1".toByteArray(Charset.defaultCharset())
+    private val secretKey: ByteArray = "TelkomselACTION!".toByteArray()
+    private lateinit var encryptedData: String
 
     private lateinit var binding: ActivityBluetoothBinding
-
-
-    @SuppressLint("MissingPermission")
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +40,7 @@ class AuthActivity : AppCompatActivity() {
         setWebView()
 
         encrypt("Telkomsel")
-        decryptWithIvPrefix(this.encryptedData, SecretKeySpec(this.secretKey.encoded, "AES")).also {
+        decryptWithIvPrefix(this.encryptedData, SecretKeySpec(this.secretKey, "AES")).also {
             Log.e(TAG, "onCreate: decrypted -> $it")
         }
     }
@@ -84,15 +81,8 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
-    private lateinit var ivByte: ByteArray
-    private lateinit var secretKey: Key
-    private lateinit var encryptedData: String
-
     fun encrypt(dataToEncrypt: String): String {
-        val key = generateKey()
-        val secretKey = SecretKeySpec(key.encoded, "AES")
-        println(TAG + " secretKey -> ${key.encoded}")
-        this.secretKey = key
+        val secretKey = SecretKeySpec(secretKey, "AES")
 
         return encryptWithIvPrefix(dataToEncrypt, secretKey).also {
             println(TAG + " encrypt: ENCRYPTED DATA -> $it")
@@ -100,7 +90,7 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
-    fun decryptWithIvPrefix(encryptedDataWithIv: String, key: SecretKeySpec): String {
+    private fun decryptWithIvPrefix(encryptedDataWithIv: String, key: SecretKeySpec): String {
         val combinedIvAndEncrypted = Base64.decode(encryptedDataWithIv, Base64.DEFAULT)
         val ivBytes = combinedIvAndEncrypted.copyOfRange(0, 16) // Extract IV (first 16 bytes)
         val encryptedData = combinedIvAndEncrypted.copyOfRange(16, combinedIvAndEncrypted.size) // The rest is encrypted data
@@ -112,44 +102,8 @@ class AuthActivity : AppCompatActivity() {
         return String(decrypted, Charsets.UTF_8)
     }
 
-    fun generateKey(): SecretKey {
-        val keyGenerator = KeyGenerator.getInstance("AES")
-        keyGenerator.init(256)
-        val secretKey = keyGenerator.generateKey()
-        return secretKey
-    }
-
-    fun encryptWithIvPrefix(data: String, key: SecretKeySpec): String {
+    private fun encryptWithIvPrefix(data: String, key: SecretKeySpec): String {
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-//        val ivBytes = ByteArray(16).apply {
-//            SecureRandom().nextBytes(this)
-//        }
-        val ivBytes = ByteArray(16).apply {
-            SecureRandom().nextBytes(this)
-        }
-
-        val baseByteArray = "Eldi".toByteArray()
-
-        val strByteArray = baseByteArray.toString()
-        val strByteArray2 = String(baseByteArray, Charsets.UTF_8)
-
-        val byteArrayResp = strByteArray.toByteArray(Charsets.UTF_8)
-        val byteArrayResp2 = strByteArray2.toByteArray(Charsets.UTF_8)
-
-
-        println("Original ByteArray: ${baseByteArray.contentToString()}")
-        println("Converted String: $strByteArray")
-        println("Converted String 2: $strByteArray")
-        println("Converted ByteArray: ${byteArrayResp.contentToString()}")
-        println("Converted ByteArray2 : ${byteArrayResp2.contentToString()}")
-
-
-
-
-
-
-
-        this.ivByte = "TelkomselJuara#1".toByteArray(Charset.defaultCharset())
         val ivSpec = IvParameterSpec(ivByte)
         cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec)
         val encrypted = cipher.doFinal(data.toByteArray(Charsets.UTF_8))
