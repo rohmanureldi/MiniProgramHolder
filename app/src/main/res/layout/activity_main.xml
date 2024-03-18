@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/buttonCameraMiniProgram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Camera Mini program app"
+        />
+
+    <Button
+        android:id="@+id/buttonBluetoothMiniProgram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BT Mini program app"
+        />
+    <Button
+        android:id="@+id/buttonGeolocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Geolocation mini program app"
+        />
+    <Button
+        android:id="@+id/buttonDeviceMotion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Device motion mini program"
+        />
+    <Button
+        android:id="@+id/buttonNetworkInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Network Info mini program"
+        />
+    <Button
+        android:id="@+id/buttonGeolocationWithCapacitor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Geolocation mini Capacitor"
+        />
+    <Button
+        android:id="@+id/buttonCameraWithCapacitor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Camera with Capacitor"
+        />
+    <Button
+        android:id="@+id/buttonDeviceMotionWithCapacitor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Device motion with Capacitor"
+        />
+    <Button
+        android:id="@+id/buttonBluetoothWithCapacitor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bluetooth with Capacitor"
+        />
+    <Button
+        android:id="@+id/buttonNetworkWithCapacitor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Network with Capacitor"
+        />
+    <Button
+        android:id="@+id/buttonBluetoothNativeImpl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bluetooth - Native implementation"
+        />
+    <Button
+        android:id="@+id/buttonAuth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Auth"
+        />
+
+</LinearLayout>
