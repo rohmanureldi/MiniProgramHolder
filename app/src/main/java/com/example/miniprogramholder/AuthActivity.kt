@@ -15,11 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.miniprogramholder.databinding.ActivityBluetoothBinding
 import org.json.JSONObject
 import java.nio.charset.Charset
-import java.security.Key
-import java.security.SecureRandom
 import javax.crypto.Cipher
-import javax.crypto.KeyGenerator
-import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
@@ -93,7 +89,10 @@ class AuthActivity : AppCompatActivity() {
     private fun decryptWithIvPrefix(encryptedDataWithIv: String, key: SecretKeySpec): String {
         val combinedIvAndEncrypted = Base64.decode(encryptedDataWithIv, Base64.DEFAULT)
         val ivBytes = combinedIvAndEncrypted.copyOfRange(0, 16) // Extract IV (first 16 bytes)
-        val encryptedData = combinedIvAndEncrypted.copyOfRange(16, combinedIvAndEncrypted.size) // The rest is encrypted data
+        val encryptedData = combinedIvAndEncrypted.copyOfRange(
+            16,
+            combinedIvAndEncrypted.size
+        ) // The rest is encrypted data
 
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
         val ivSpec = IvParameterSpec(ivBytes)
@@ -110,8 +109,6 @@ class AuthActivity : AppCompatActivity() {
         val combinedIvAndEncrypted = ivByte + encrypted
         return Base64.encodeToString(combinedIvAndEncrypted, Base64.DEFAULT)
     }
-
-
 
 
     inner class WebAppInterface(
