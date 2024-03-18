@@ -41,7 +41,7 @@ class AuthActivity : AppCompatActivity() {
         setContentView(binding.root)
         setWebView()
 
-        encrypt()
+        encrypt("Telkomsel")
         decryptWithIvPrefix(this.encryptedData, SecretKeySpec(this.secretKey.encoded, "AES")).also {
             Log.e(TAG, "onCreate: decrypted -> $it")
         }
@@ -81,13 +81,13 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var secretKey: Key
     private lateinit var encryptedData: String
 
-    fun encrypt() {
+    fun encrypt(dataToEncrypt: String): String {
         val key = generateKey()
         val secretKey = SecretKeySpec(key.encoded, "AES")
         println(TAG + " secretKey -> ${key.encoded}")
         this.secretKey = key
 
-        encryptWithIvPrefix("Telkomsel", secretKey).also {
+        return encryptWithIvPrefix(dataToEncrypt, secretKey).also {
             println(TAG + " encrypt: ENCRYPTED DATA -> $it")
             encryptedData = it
         }
@@ -145,10 +145,11 @@ class AuthActivity : AppCompatActivity() {
         @JavascriptInterface
         fun getAuth(data: String): String {
             val jsonObj = JSONObject()
+            val endcryptedData = encrypt(dataToEncrypt = "Telkomsel Super")
 
             jsonObj.put(
                 "token",
-                "Bearer $data"
+                "Bearer $endcryptedData"
             )
             return jsonObj.toString()
         }
