@@ -14,6 +14,7 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import com.example.miniprogramholder.databinding.ActivityBluetoothBinding
 import org.json.JSONObject
+import java.nio.charset.Charset
 import java.security.Key
 import java.security.SecureRandom
 import javax.crypto.Cipher
@@ -60,7 +61,7 @@ class AuthActivity : AppCompatActivity() {
                 WebAppInterface(applicationContext, binding.webViewBluetooth)
             addJavascriptInterface(webInterface, "Android")
             webViewClient = this@AuthActivity.webViewClient
-            loadUrl(webUrl)
+            loadUrl(webUrl, mapOf("deviceType" to "Android"))
         }
     }
 
@@ -120,16 +121,33 @@ class AuthActivity : AppCompatActivity() {
         val ivBytes = ByteArray(16).apply {
             SecureRandom().nextBytes(this)
         }
-        this.ivByte = ivBytes
-        val encodedIvByte = Base64.encodeToString(ivBytes, Base64.DEFAULT)
-        val decodedIvByte = Base64.decode(encodedIvByte, Base64.DEFAULT)
-        println(TAG + " encryptWithIvPrefix: ivBytesEncoded -> $encodedIvByte")
-        println(TAG + " encryptWithIvPrefix: ivBytesDecoded -> $decodedIvByte")
-        println(TAG + " encryptWithIvPrefix: ivBytes -> $ivBytes")
-        val ivSpec = IvParameterSpec(ivBytes)
+
+        val baseByteArray = "Eldi".toByteArray()
+
+        val strByteArray = baseByteArray.toString()
+        val strByteArray2 = String(baseByteArray, Charsets.UTF_8)
+
+        val byteArrayResp = strByteArray.toByteArray(Charsets.UTF_8)
+        val byteArrayResp2 = strByteArray2.toByteArray(Charsets.UTF_8)
+
+
+        println("Original ByteArray: ${baseByteArray.contentToString()}")
+        println("Converted String: $strByteArray")
+        println("Converted String 2: $strByteArray")
+        println("Converted ByteArray: ${byteArrayResp.contentToString()}")
+        println("Converted ByteArray2 : ${byteArrayResp2.contentToString()}")
+
+
+
+
+
+
+
+        this.ivByte = "TelkomselJuara#1".toByteArray(Charset.defaultCharset())
+        val ivSpec = IvParameterSpec(ivByte)
         cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec)
         val encrypted = cipher.doFinal(data.toByteArray(Charsets.UTF_8))
-        val combinedIvAndEncrypted = ivBytes + encrypted
+        val combinedIvAndEncrypted = ivByte + encrypted
         return Base64.encodeToString(combinedIvAndEncrypted, Base64.DEFAULT)
     }
 
