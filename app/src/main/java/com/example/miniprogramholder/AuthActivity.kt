@@ -87,12 +87,8 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun decryptWithIvPrefix(encryptedDataWithIv: String, key: SecretKeySpec): String {
-        val combinedIvAndEncrypted = Base64.decode(encryptedDataWithIv, Base64.DEFAULT)
-        val ivBytes = combinedIvAndEncrypted.copyOfRange(0, 16) // Extract IV (first 16 bytes)
-        val encryptedData = combinedIvAndEncrypted.copyOfRange(
-            16,
-            combinedIvAndEncrypted.size
-        ) // The rest is encrypted data
+        val encryptedData = Base64.decode(encryptedDataWithIv, Base64.DEFAULT)
+        val ivBytes = ivByte
 
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
         val ivSpec = IvParameterSpec(ivBytes)
@@ -106,7 +102,7 @@ class AuthActivity : AppCompatActivity() {
         val ivSpec = IvParameterSpec(ivByte)
         cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec)
         val encrypted = cipher.doFinal(data.toByteArray(Charsets.UTF_8))
-        val combinedIvAndEncrypted = ivByte + encrypted
+        val combinedIvAndEncrypted = encrypted
         return Base64.encodeToString(combinedIvAndEncrypted, Base64.DEFAULT)
     }
 
@@ -118,13 +114,13 @@ class AuthActivity : AppCompatActivity() {
 
         @SuppressLint("MissingPermission")
         @JavascriptInterface
-        fun getAuth(data: String): String {
+        fun getAuth(): String {
             val jsonObj = JSONObject()
-            val endcryptedData = encrypt(dataToEncrypt = "Telkomsel Super")
+            val endcryptedData = encrypt(dataToEncrypt = "Telkomsel Super Mantaps")
 
             jsonObj.put(
                 "token",
-                "Bearer $endcryptedData"
+                endcryptedData
             )
             return jsonObj.toString()
         }
