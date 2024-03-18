@@ -61,7 +61,13 @@ class AuthActivity : AppCompatActivity() {
                 WebAppInterface(applicationContext, binding.webViewBluetooth)
             addJavascriptInterface(webInterface, "Android")
             webViewClient = this@AuthActivity.webViewClient
-            loadUrl(webUrl, mapOf("deviceType" to "Android"))
+            val baseCustomUserAgentJson = JSONObject()
+            val customUserAgentExtras = JSONObject()
+            customUserAgentExtras.put("deviceType", "Android")
+            baseCustomUserAgentJson.put("default", settings.userAgentString)
+            baseCustomUserAgentJson.put("extra", customUserAgentExtras)
+            settings.userAgentString = baseCustomUserAgentJson.toString()
+            loadUrl(webUrl)
         }
     }
 
