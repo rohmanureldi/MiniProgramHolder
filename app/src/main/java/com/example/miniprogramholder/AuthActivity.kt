@@ -2,10 +2,15 @@ package com.example.miniprogramholder
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.net.http.SslError
+import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.view.View
+import android.view.WindowInsetsController
+import android.view.WindowManager
 import android.webkit.JavascriptInterface
 import android.webkit.SslErrorHandler
 import android.webkit.WebSettings
@@ -106,13 +111,52 @@ class AuthActivity : AppCompatActivity() {
         return Base64.encodeToString(combinedIvAndEncrypted, Base64.DEFAULT)
     }
 
+    fun changeStatusBarColor(colorHexCode: String) {
+        runCatching {
+            runOnUiThread {
+                val color = Color.parseColor(colorHexCode)
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                window.statusBarColor = color
+            }
+        }
+
+    }
+
+    fun setLightStatusBar(isLight: Boolean) {
+        runCatching {
+            runOnUiThread {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val windowInsetsController = window.insetsController
+                    if (isLight) {
+                        windowInsetsController?.setSystemBarsAppearance(
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                        )
+                    } else {
+                        windowInsetsController?.setSystemBarsAppearance(
+                            0,
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                        )
+                    }
+                } else {
+                    window.decorView.apply {
+                        systemUiVisibility = if (isLight) {
+                            systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                        } else {
+                            systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     inner class WebAppInterface(
         private val context: Context,
         private val webView: WebView
     ) {
 
-        @SuppressLint("MissingPermission")
         @JavascriptInterface
         fun getAuth(): String {
             val jsonObj = JSONObject()
@@ -123,6 +167,16 @@ class AuthActivity : AppCompatActivity() {
                 endcryptedData
             )
             return jsonObj.toString()
+        }
+
+        @JavascriptInterface
+        fun setStatusBarColorBackground(colorHexCode: String) {
+            changeStatusBarColor(colorHexCode)
+        }
+
+        @JavascriptInterface
+        fun isStatusBarLightTheme(isLight: Boolean) {
+            setLightStatusBar(isLight)
         }
     }
 
